@@ -1,0 +1,27 @@
+<h1>Tweets #Ukraine</h1>
+<% require 'Twitter' #gem install twitter
+
+        # Create a read write application from : 
+        # https://apps.twitter.com
+        # authenticate it for your account
+        # fill in the following
+	client = Twitter::Streaming::Client.new do |config|
+  config.consumer_key        = "fWwO9U8E7jlcGE5gG3svlA"
+  config.consumer_secret     = "UxqQ1p6OhNHatsz2SbDTI5QcjGIOoW7hXMacdXTSTis"
+  config.access_token        = "126661211-bg0Hb4ngjLOLQACbFTF8jEp4I3kO2IID2HZVvVPD"
+  config.access_token_secret = "FPvFLn9SuBSawGwWoBplxNNkzuc5r7CHHyvjrquFM3sIK"
+end		
+topics = ["Ukraine"]
+stored_tweets = []
+tweets_stored = 0
+
+client.filter(track: topics.join(",")) do |tweet|
+    stored_tweets << {username: tweet.attrs[:user][:screenname], tweet_text: tweet.text}
+    tweets_stored += 1
+	@num=tweets_stored
+	@time=tweet.attrs[:user][:screenname]
+	@text=tweet.text %>
+	<p><%= @num %>.  <%= @time %><%= @text %></p>
+  <%  break if tweets_stored >= 10
+end %>
+ 
