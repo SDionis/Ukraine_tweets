@@ -1,27 +1,80 @@
-<h1>Tweets #Ukraine</h1>
-<% require 'Twitter' #gem install twitter
-
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title>10 Tweets Ukraine</title>
+  <style>
+   h1 {
+    text-align:  center;
+   }
+   #pattern-style-a {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	font-size: 14px;
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+	margin: 0px;
+}
+   #pattern-style-a th {
+	font-size: 17px;
+	font-weight: normal;
+	border-bottom: 1px solid #fff;
+	color: #039;
+	padding-bottom:8px;
+	padding-right:8px;
+	align: left;
+	}
+  </style>
+ </head>
+ <body>
+<h1>Last 10 tweets with #Ukraine</h1>
+<% 
         # Create a read write application from : 
         # https://apps.twitter.com
         # authenticate it for your account
         # fill in the following
 	client = Twitter::Streaming::Client.new do |config|
-  config.consumer_key        = "fWwO9U8E7jlcGE5gG3svlA"
-  config.consumer_secret     = "UxqQ1p6OhNHatsz2SbDTI5QcjGIOoW7hXMacdXTSTis"
-  config.access_token        = "126661211-bg0Hb4ngjLOLQACbFTF8jEp4I3kO2IID2HZVvVPD"
-  config.access_token_secret = "FPvFLn9SuBSawGwWoBplxNNkzuc5r7CHHyvjrquFM3sIK"
-end		
-topics = ["Ukraine"]
-stored_tweets = []
-tweets_stored = 0
-
-client.filter(track: topics.join(",")) do |tweet|
-    stored_tweets << {username: tweet.attrs[:user][:screenname], tweet_text: tweet.text}
-    tweets_stored += 1
-	@num=tweets_stored
-	@time=tweet.attrs[:user][:screenname]
-	@text=tweet.text %>
-	<p><%= @num %>.  <%= @time %><%= @text %></p>
-  <%  break if tweets_stored >= 10
-end %>
- 
+	config.consumer_key        = "fWwO9U8E7jlcGE5gG3svlA"
+	config.consumer_secret     = "UxqQ1p6OhNHatsz2SbDTI5QcjGIOoW7hXMacdXTSTis"
+	config.access_token        = "126661211-bg0Hb4ngjLOLQACbFTF8jEp4I3kO2IID2HZVvVPD"
+	config.access_token_secret = "FPvFLn9SuBSawGwWoBplxNNkzuc5r7CHHyvjrquFM3sIK"
+	end		
+	topics = ["Ukraine"]
+	tweets_stored = 0 %>
+			<table id="pattern-style-a">
+			<thead>
+			<tr>
+			<th scope="col1">Num</th>
+			<th scope="col1">Time</th>
+			<th scope="col1">Name</th>
+			<th scope="col1">Text</th>
+			</tr>
+			</thead>
+			<tbody>
+	<% client.filter(track: topics.join(",")) do |tweet|
+			tweets_stored += 1
+			@num=tweets_stored
+			date=tweet.created_at
+			@time=date.to_formatted_s(:db)
+			@user=tweet.user[:name]
+			@text=tweet.text %>
+			<tr>
+			<td>
+			<b><%= @num %></b>			
+			</td>
+			<td>
+			<u><%= @time %></u>
+			</td>
+			<td>
+			<b><%= @user %></b>
+			</td>
+			<td>
+			<%= @text %>
+			</td>
+			</tr>
+			<%  break if tweets_stored >= 10
+	end %>
+				</tbody>
+			</table>
+ </body>
+</html>
